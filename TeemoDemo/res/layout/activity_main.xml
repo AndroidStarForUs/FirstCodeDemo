@@ -1,0 +1,30 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
+
+    <Button
+        android:id="@+id/main_animation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="音乐动画" />
+
+    <Button
+        android:id="@+id/main_image_loader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ImageLoader" />
+
+    <Button
+        android:id="@+id/main_dynamic_gridview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Dynamic_GridView" />
+
+    <Button
+        android:id="@+id/main_fly_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="FLY_TEXT" />
+
+</LinearLayout>
