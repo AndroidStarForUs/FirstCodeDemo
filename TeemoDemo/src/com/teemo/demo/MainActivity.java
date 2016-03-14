@@ -11,7 +11,8 @@ import com.teemo.fly.text.SearchFlyActivity;
 import com.teemo.image.loader.ImageActivity;
 import com.teemo.music.animation.AnimationDemo;
 
-public class MainActivity extends Activity implements OnClickListener {
+public class MainActivity extends Activity implements OnClickListener{
+    private final String TAG = MainActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +42,5 @@ public class MainActivity extends Activity implements OnClickListener {
             break;
         }
     }
-
 
 }
