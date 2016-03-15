@@ -26,5 +26,22 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="FLY_TEXT" />
+    <Button
+        android:id="@+id/main_garbled_tag"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="GARBLED_TAG" />
+
+    <Button
+        android:id="@+id/main_top_indicator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TOP_INDICATOR" />
+
+    <Button
+        android:id="@+id/main_ap_conn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="CONN_NETWORK_BY_AP" />
 
 </LinearLayout>

@@ -7,9 +7,8 @@
     <uses-sdk
         android:minSdkVersion="14"
         android:targetSdkVersion="18" />
-    <uses-permission android:name="android.permission.INTERNET"/>
 
-    
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -25,15 +24,47 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.teemo.music.animation.AnimationDemo" >
+        <activity
+            android:name="com.teemo.music.animation.AnimationDemo"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar" >
         </activity>
-        <activity android:name="com.teemo.image.loader.ImageActivity" >
+        <activity
+            android:name="com.teemo.image.loader.ImageActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar" >
         </activity>
-        <activity android:name="com.teemo.image.loader.ImageListActivity" >
+        <activity
+            android:name="com.teemo.image.loader.ImageListActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar" >
         </activity>
-        <activity android:name="com.teemo.dynamic.gridview.GridActivity" >
+        <activity
+            android:name="com.teemo.dynamic.gridview.GridActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar" >
         </activity>
-        <activity android:name="com.teemo.fly.text.SearchFlyActivity" >
+        <activity
+            android:name="com.teemo.fly.text.SearchFlyActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar" >
+        </activity>
+        <activity
+            android:name="com.teemo.garbled.tag.GarbledTagActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar" >
+        </activity>
+        <activity
+            android:name="com.teemo.top.indicator.TopIndicatorActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar" >
         </activity>
     </application>
 
