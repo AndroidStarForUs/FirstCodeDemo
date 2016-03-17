@@ -19,7 +19,7 @@ public class MainActivity extends Activity implements OnClickListener{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main);// 初始化view
         this.findViewById(R.id.main_animation).setOnClickListener(this);
         this.findViewById(R.id.main_image_loader).setOnClickListener(this);
         this.findViewById(R.id.main_dynamic_gridview).setOnClickListener(this);
