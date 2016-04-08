@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.TypedValue;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.teemo.demo.R;
@@ -41,22 +43,40 @@ public class GarbledTagActivity extends Activity implements OnGarbledItemClickLi
         setContentView(R.layout.activity_garbled_tag);
         mContext = this;
         garbledTag = (GarbledTag) this.findViewById(R.id.garbled_tag);
-        /*garbledTag.setMarginTop(20);
-        garbledTag.setItemTextSize(28);
-        garbledTag.setItemMarginRight(30);*/
-        garbledTag.setDefaultConfig();
+        
         garbledTag.setOnGarbledItemClickListener(this);
-        garbledTag.add(getTagData());
+        garbledTag.add(getTagData(), true);
+        addText();
+    }
+
+    private void addText() {
+        TextView view = new TextView(this);
+        float size = getResources().getDimension(R.dimen.activity_vertical_margin);
+        view.setTextSize(TypedValue.COMPLEX_UNIT_PX, size);
+        view.setText("");
     }
 
     private ArrayList<String> getTagData() {
         ArrayList<String> data = new ArrayList<String>();
+//        data.add("文章");
+//        data.add("周杰伦");
+//        data.add("庄心妍");
+//        data.add("周传雄");
+//        data.add("两只老虎");
         data.add("上海市");
         data.add("浦东新区");
         data.add("张江镇");
         data.add("玉兰香苑");
         data.add("盛夏路");
         data.add("爱迪生日记");
+        data.add("爱迪日记");
+        data.add("生日记");
+        data.add("爱迪生日记");
+        data.add("爱迪生记");
+        data.add("爱迪生日记");
+        data.add("爱迪记");
+        data.add("爱迪记");
+        data.add("爱迪生记");
         return data;
     }
 

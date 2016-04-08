@@ -3,6 +3,11 @@
     android:layout_height="wrap_content"
     android:orientation="vertical" >
 
+    <TextView
+        android:id="@+id/main_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <Button
         android:id="@+id/main_animation"
         android:layout_width="match_parent"
@@ -26,7 +31,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="FLY_TEXT" />
-    <Button
+
+    <Button
         android:id="@+id/main_garbled_tag"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

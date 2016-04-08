@@ -31,6 +31,7 @@ import android.widget.TextView;
 
 import com.teemo.demo.R;
 import com.teemo.music.animation.Utils;
+import com.teemo.utils.LogMgr;
 
 /**
  * @brief 
@@ -40,15 +41,18 @@ import com.teemo.music.animation.Utils;
  * @date 2016-3-3 下午4:37:54
  */
 public class GarbledTag extends LinearLayout implements Handler.Callback{
-    
+    private final String MOUDLE = GarbledTag.class.getSimpleName();
     private final String TAG = GarbledTag.class.getSimpleName();
+
     private Context mContext;
     private ArrayList<String> mTagList = null;
     private int marginTop = 0;
     private int itemTextSize = 16;
-    private String itemTextColor = "#666666";
     private int itemMarginRight = 5;
     private int itemWidth = 0;
+    private String itemTextColor = "#000000";
+
+    private final int LIMIT_ROW_NUM = 3;
 
     private Handler mHandler = new Handler(this);
     public final int HANDLER_POST_ITEM_CLICK  = 0;
@@ -68,26 +72,24 @@ public class GarbledTag extends LinearLayout implements Handler.Callback{
 
     public GarbledTag(Context context) {
         super(context);
-        //Log.e(TAG, "MultiTag :: >>> 1");
         init(context);
     }
 
     public GarbledTag(Context context, AttributeSet attrs) {
         super(context, attrs);
-        //Log.e(TAG, "MultiTag :: >>> 2");
         init(context);
         //TypedArray a = context.obtainStyle
     }
 
     public GarbledTag(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        //Log.e(TAG, "MultiTag :: >>> 3");
       
         init(context);
     }
 
     private void init(Context context) {
         mContext = context;
+        setDefaultConfig();
         setOrientation(VERTICAL);
         /*LayoutParams params = (LayoutParams) getLayoutParams();
         int rightMargin = params.rightMargin;
@@ -105,13 +107,12 @@ public class GarbledTag extends LinearLayout implements Handler.Callback{
 
     /**
      * @brief 此步骤是必须的，在初始化的时候就需要执行.
-     *
-     * void
      */
     public void setDefaultConfig() {
-        setMarginTop(20);
-        setItemTextSize(28);
-        setItemMarginRight(30);
+        setMarginTop(10);
+        setItemTextSize(14);
+        setItemTextColor("#666666");
+        setItemMarginRight(15);
     }
 
     /**
@@ -120,55 +121,73 @@ public class GarbledTag extends LinearLayout implements Handler.Callback{
      * @param marginRight 以px为单位
      */
     public void setItemMarginRight(int marginRight) {
-        this.itemMarginRight =  Utils.getInstance().px2dip(mContext, marginRight);
+        this.itemMarginRight =  (int) (marginRight * Utils.getInstance().getScreenDensity(mContext));
+        //this.itemMarginRight =  Utils.getInstance().px2dip(mContext, marginRight);
     }
 
     /**
      * @brief 设置Item中TextSize的字体大小.
      * 
-     * @param textSize 以px为单位
+     * @param textSize 以1.0屏幕密度下的dp为单位
      */
     public void setItemTextSize(int textSize) {
-        this.itemTextSize =  Utils.getInstance().px2dip(mContext, textSize);
+        float screenDensity = Utils.getInstance().getScreenDensity(mContext);
+        LogMgr.e(MOUDLE, TAG, "[setItemTextSize] screenDensity = " + screenDensity);
+        this.itemTextSize =  (int) (textSize * screenDensity);
+        LogMgr.e(MOUDLE, TAG, "[setItemTextSize] item text size = " + itemTextSize);
     }
 
     /**
-     * @brief 设置Item中TextVeiw的颜色
+     * @brief 设置Item中TextView的字体颜色.
      * 
-     * @param default color is #666666
+     * @param color 字体颜色，default "#000000"
      */
-    public void setItemTextColor(String textColor) {
-        this.itemTextColor =  textColor;
+    public void setItemTextColor(String color) {
+        this.itemTextColor = color;
     }
+
     /**
      * @brief 设置每行距离上面的高度，marginTop
      *
      * @param marginTop marginTop 以px为单位.
      */
     public void setMarginTop(int marginTop) {
-        this.marginTop = Utils.getInstance().px2dip(mContext, marginTop);
+        this.marginTop =  (int) (marginTop * Utils.getInstance().getScreenDensity(mContext));
+        //this.marginTop = Utils.getInstance().px2dip(mContext, marginTop);
     }
 
     /**
      * @brief 更新MultiTag中的数据源
      *
      * @param data
+     * @param isNormalSort true为正常排序，false为倒序.
      */
-    public void add(ArrayList<String> data) {
+    public void add(ArrayList<String> data, boolean isNormalSort) {
         removeAllViews();
         if (data == null) {
             mTagList = new ArrayList<String>();
         } else {
             mTagList = new ArrayList<String>(data);
         }
-        for (int i = 0; i < mTagList.size(); i++) {
-            addItemTag(mContext, mTagList.get(i));
+        if (isNormalSort) {
+            for (int i = 0; i < mTagList.size(); i++) {
+                boolean result = addItemTag(mContext, mTagList.get(i));
+                if (!result)
+                    break;
+            }
+        } else {
+            for (int i = mTagList.size() - 1; i >= 0; i--) {
+                boolean result = addItemTag(mContext, mTagList.get(i));
+                if (!result)
+                    break;
+            } 
         }
     }
 
-    private void addItemTag(Context context, String content) {
+    private boolean addItemTag(Context context, String content) {
         Log.e(TAG, "addItemTag :: start addItemTag");
         LinearLayout itemLayout = null;
+        boolean isNeedCreateNewItem = false;
         TextView itemTxv = getItemTextView(context, content);
         if (getChildCount() == 0) {
             itemLayout = getItemLayout(context, false);
@@ -176,13 +195,32 @@ public class GarbledTag extends LinearLayout implements Handler.Callback{
             invalidate();
         } else {
             itemLayout = (LinearLayout) getChildAt(getChildCount() -1);
-            if (isCreateNewItem(context, itemLayout, itemTxv)) {
+            isNeedCreateNewItem = isCreateNewItem(context, itemLayout, itemTxv);
+            if (isNeedCreateNewItem && getChildCount() < LIMIT_ROW_NUM) {
+                isNeedCreateNewItem = false;
                 itemLayout = getItemLayout(context, true);
                 addView(itemLayout);
             }
         }
-        itemLayout.addView(itemTxv);
-        invalidate();
+        if (getChildCount() < LIMIT_ROW_NUM || (getChildCount() == LIMIT_ROW_NUM && !isNeedCreateNewItem)) {
+            itemLayout.addView(itemTxv);
+            invalidate();
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @brief 清除Item标签
+     *
+     * @return
+     */
+    public boolean clearItemTag() {
+        removeAllViews();
+        if (mTagList != null) {
+            mTagList.clear();
+        }
+        return true;
     }
 
     /**
@@ -211,12 +249,29 @@ public class GarbledTag extends LinearLayout implements Handler.Callback{
         int parentMarginLeft = params.leftMargin;
         //Log.e(TAG, "The parent margin right = " + parentMarginRight);
         //Log.e(TAG, "The item layout sun width = " + sumWidth + " >>> textView width = " + itemTxvWidth + " >>> total width = " + itemWidth);
-        if (sumWidth + itemTxvWidth >= (itemWidth - parentMarginRight - parentMarginLeft)) {
-            return true;
+        int valide = (itemWidth - parentMarginRight - parentMarginLeft) - (sumWidth + itemTxvWidth);
+        if (valide >= 0) {
+            if (valide <= itemMarginRight) {
+                cancelItemMarginRight(itemTxv);
+            }
+            return false;
         }
-        return false;
+        return true;
     }
 
+    private void cancelItemMarginRight(TextView itemTxv) {
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        params.rightMargin = 0;
+        itemTxv.setLayoutParams(params);
+    }
+
+    /**
+     * @brief Create item layout for garbled.
+     *
+     * @param context
+     * @param isNeedMarginTop
+     * @return 
+     */
     private LinearLayout getItemLayout(Context context, boolean isNeedMarginTop) {
         LinearLayout itemLayout = new LinearLayout(context);
         itemLayout.setOrientation(HORIZONTAL);
@@ -228,8 +283,14 @@ public class GarbledTag extends LinearLayout implements Handler.Callback{
         return itemLayout;
     }
 
+    /**
+     * @brief 创建Item中的TextView，用于显示Tag的内容
+     *
+     * @return
+     * TextView The item view of garbled tag.
+     */
     @SuppressLint("NewApi")
-    private TextView getItemTextView(Context context, String content) {
+    private TextView getItemTextView(Context context, final String content) {
         TextView itemTxv = new TextView(context);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         params.rightMargin = itemMarginRight;
@@ -244,17 +305,23 @@ public class GarbledTag extends LinearLayout implements Handler.Callback{
             }
         });
         itemTxv.setText(content);
-        itemTxv.setTextSize(TypedValue.COMPLEX_UNIT_DIP, Utils.getInstance().px2dip(mContext, itemTextSize));
+        itemTxv.setTextSize(TypedValue.COMPLEX_UNIT_PX, itemTextSize);
         itemTxv.setTextColor(Color.parseColor(itemTextColor));
-        itemTxv.setBackground(context.getResources().getDrawable(R.drawable.music_search_record));
+        itemTxv.setBackgroundResource(R.drawable.music_search_record);
         return itemTxv;
     }
 
-    private int getViewWidth(View itemTxv) {
+    /**
+     * @brief 获取控件的宽度
+     *
+     * @param view 
+     * @return The width value of view.
+     */
+    private int getViewWidth(View view) {
         int w = View.MeasureSpec.makeMeasureSpec(0,View.MeasureSpec.UNSPECIFIED);
         int h = View.MeasureSpec.makeMeasureSpec(0,View.MeasureSpec.UNSPECIFIED);
-        itemTxv.measure(w, h);
-        int width =itemTxv.getMeasuredWidth();
+        view.measure(w, h);
+        int width = view.getMeasuredWidth();
         return width;
     }
 
