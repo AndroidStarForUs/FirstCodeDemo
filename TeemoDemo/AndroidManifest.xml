@@ -73,6 +73,12 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar" >
         </activity>
+        <activity
+            android:name="com.teemo.rv.RVActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar" >
+        </activity>
     </application>
 
 </manifest>

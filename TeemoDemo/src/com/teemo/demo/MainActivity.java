@@ -14,9 +14,8 @@ import com.teemo.fly.text.SearchFlyActivity;
 import com.teemo.garbled.tag.GarbledTagActivity;
 import com.teemo.image.loader.ImageActivity;
 import com.teemo.music.animation.AnimationDemo;
-import com.teemo.music.animation.Utils;
+import com.teemo.rv.RVActivity;
 import com.teemo.top.indicator.TopIndicatorActivity;
-import com.teemo.utils.LogMgr;
 
 public class MainActivity extends Activity implements OnClickListener{
     private final String TAG = MainActivity.class.getSimpleName();
@@ -35,6 +34,7 @@ public class MainActivity extends Activity implements OnClickListener{
         this.findViewById(R.id.main_top_indicator).setOnClickListener(this);
         this.findViewById(R.id.main_ap_conn).setOnClickListener(this);
         this.findViewById(R.id.main_aidl_intf).setOnClickListener(this);
+        this.findViewById(R.id.main_rv).setOnClickListener(this);
 
     }
 
@@ -88,6 +88,9 @@ public class MainActivity extends Activity implements OnClickListener{
             break;
         case R.id.main_aidl_intf:
             startActivity(new Intent(this, AidlActivity.class));
+            break;
+        case R.id.main_rv:
+            startActivity(new Intent(this, RVActivity.class));
             break;
         }
     }
