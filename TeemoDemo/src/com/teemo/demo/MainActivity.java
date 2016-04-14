@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 
+import com.teemo.aidl.AidlActivity;
+import com.teemo.apconn.ApReceverDemo;
 import com.teemo.dynamic.gridview.GridActivity;
 import com.teemo.fly.text.SearchFlyActivity;
 import com.teemo.garbled.tag.GarbledTagActivity;
@@ -32,6 +34,7 @@ public class MainActivity extends Activity implements OnClickListener{
         this.findViewById(R.id.main_garbled_tag).setOnClickListener(this);
         this.findViewById(R.id.main_top_indicator).setOnClickListener(this);
         this.findViewById(R.id.main_ap_conn).setOnClickListener(this);
+        this.findViewById(R.id.main_aidl_intf).setOnClickListener(this);
 
     }
 
@@ -57,7 +60,7 @@ public class MainActivity extends Activity implements OnClickListener{
             startActivity(new Intent(this, TopIndicatorActivity.class));
             break;
         case R.id.main_ap_conn:
-            //startActivity(new Intent(this, ApReceverDemo.class));
+            startActivity(new Intent(this, ApReceverDemo.class));
             //String time = "*,*,*,10,00,00,*,0*1";
             //String time = "*,*,01,10,00,00,*,0*1 ";
             //String time = "*,*,01|03,10,00,00,*,0*1";
@@ -76,12 +79,15 @@ public class MainActivity extends Activity implements OnClickListener{
             //String time = "*,*,*,10,00,00,Mon|Fri,0*1 ";
             //String time = "*,*,*,10,00,00,Mon-Fri,0*1";
 
-            String time = "*,*,*,06,00,00,Mon-Fri,300*3";
+            //String time = "*,*,*,06,00,00,Mon-Fri,300*3";
 
             
-            String result = Utils.getInstance().formatTimeStr(time);
-            LogMgr.d(TAG, TAG, "result = " + result);
-            mTextView.setText(result);
+            //String result = Utils.getInstance().formatTimeStr(time);
+            //LogMgr.d(TAG, TAG, "result = " + result);
+            //mTextView.setText(result);
+            break;
+        case R.id.main_aidl_intf:
+            startActivity(new Intent(this, AidlActivity.class));
             break;
         }
     }
