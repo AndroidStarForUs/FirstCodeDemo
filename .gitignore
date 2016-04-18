@@ -5,7 +5,8 @@
 */bin/*
 !*/bin/*.jar
 gen/
-
-
 proguard/
+cardview/bin
+cardview/gen
+
 

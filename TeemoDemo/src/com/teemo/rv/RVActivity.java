@@ -18,6 +18,8 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -36,29 +38,63 @@ import com.teemo.demo.R;
  *
  * @date 2016-4-14 下午3:57:13
  */
-public class RVActivity extends Activity {
+public class RVActivity extends Activity implements OnRefreshListener {
     private RecyclerView mRecyclerView;
+    private LinearLayoutManager mLayoutManager; 
     private MyAdapter mAdapter;
+    private ArrayList<String> mData = null;
+    private SwipeRefreshLayout mSwipeRefresh;
+    private int lastVisibleItem = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recycler_view);
-       mRecyclerView = (RecyclerView) this.findViewById(R.id.rv_recyclerview);
-       mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-       mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-       mRecyclerView.setHasFixedSize(true);
-       mAdapter = new MyAdapter(null); 
-       mRecyclerView.setAdapter(mAdapter);
-       initData();
+        configSwipeRefreshWidget();
+        configRecyclerView();
+        mAdapter = new MyAdapter(null); 
+        mRecyclerView.setAdapter(mAdapter);
+        initData();
+    }
+
+    private void configSwipeRefreshWidget() {
+        mSwipeRefresh = (SwipeRefreshLayout) this.findViewById(R.id.rv_swipe_refresh);
+        mSwipeRefresh.setColorScheme(R.color.color_1, R.color.color_2, R.color.color_3, R.color.color_4);
+        mSwipeRefresh.setOnRefreshListener(this);
+        //mSwipeRefresh.set
+    }
+
+    private void configRecyclerView() {
+        mRecyclerView = (RecyclerView) this.findViewById(R.id.rv_recyclerview);
+        mLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        mRecyclerView.setHasFixedSize(true);
+    
+        mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            
+            @Override
+            public void onScrolled(int dx, int dy) {
+                lastVisibleItem = mLayoutManager.findLastVisibleItemPosition();
+            }
+            
+            @Override
+            public void onScrollStateChanged(int newState) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem + 1 == mAdapter.getItemCount()) {
+                    // to refresh
+                    mSwipeRefresh.setRefreshing(true);
+                    loadMore();
+                }
+            }
+        });
     }
 
     private void initData() {
-        ArrayList<String> data = new ArrayList<String>();
+        mData= new ArrayList<String>();
         for (int i = 0; i < 10; i++) {
-            data.add("第" + i + "项");
+            mData.add("第" + i + "项");
         }
-        mAdapter.setData(data);
+        mAdapter.setData(mData);
     }
 
     class MyAdapter extends RecyclerView.Adapter<MyViewHolder> {
@@ -109,5 +145,27 @@ public class RVActivity extends Activity {
             mTextView = (TextView) v.findViewById(R.id.card_view_item_name);
         }
         
+    }
+
+    @Override
+    public void onRefresh() {
+        if (mData == null) {
+            return;
+        }
+        mData.clear();
+        for (int i = 0; i < 10; i++) {
+            mData.add("第" + i + "项");
+        }
+        mSwipeRefresh.setRefreshing(false);
+    }
+
+    private void loadMore() {
+        if (mData == null) {
+            return;
+        }
+        for (int i = 0; i < 10; i++) {
+            mData.add(i + "LoadMore");
+        }
+        mAdapter.setData(mData);
     }
 }
