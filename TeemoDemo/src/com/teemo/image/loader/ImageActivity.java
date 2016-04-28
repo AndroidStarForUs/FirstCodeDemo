@@ -14,9 +14,6 @@
 
 package com.teemo.image.loader;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.teemo.demo.R;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -24,6 +21,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
+
+import com.nineoldandroids.animation.ObjectAnimator;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.teemo.demo.R;
 
 /**
  * @brief 
@@ -56,7 +57,8 @@ public class ImageActivity extends Activity implements OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
         case R.id.image_loader_img:
-            startActivity(new Intent(mContext, ImageListActivity.class));
+            //startActivity(new Intent(mContext, ImageListActivity.class));
+            ObjectAnimator.ofFloat(v, "rotationX", 0.0f, -360f).setDuration(500).start();
             break;
         }
     }

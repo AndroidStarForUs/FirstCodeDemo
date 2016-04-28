@@ -16,23 +16,23 @@ package com.teemo.music.animation;
 
 import java.util.ArrayList;
 
-import com.teemo.demo.R;
-
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
-import android.widget.LinearLayout;
-import android.widget.LinearLayout.LayoutParams;
+import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.AdapterView.OnItemClickListener;
+
+import com.nineoldandroids.animation.ObjectAnimator;
+import com.teemo.demo.R;
 
 /**
  * @brief Demo for animation.
@@ -43,7 +43,9 @@ import android.widget.AdapterView.OnItemClickListener;
  */
 public class AnimationDemo extends Activity implements OnItemClickListener {
     private ListView mListView = null;
+    private Button mAnimationBtn = null;
     private Context mContext;
+    private FrameLayout mParentFrame;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +53,10 @@ public class AnimationDemo extends Activity implements OnItemClickListener {
         setContentView(R.layout.activity_animation_demo);
         mContext = this;
         mListView = (ListView) this.findViewById(R.id.animation_demo_listview);
-        ArrayList<Object> data = new ArrayList<Object>();
+        mAnimationBtn = (Button) this.findViewById(R.id.animation_demo_btn);
+        mParentFrame = (FrameLayout) this.findViewById(R.id.music_animator_parent);
+        
+       ArrayList<Object> data = new ArrayList<Object>();
         for (int i = 0; i < 30; i++) {
             data.add(null);
         }
@@ -61,13 +66,8 @@ public class AnimationDemo extends Activity implements OnItemClickListener {
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        int[] location = new int[2];
-        view.getLocationOnScreen(location);
-        //Log.e("Location", "x: = " + location[0]);
-        Log.e("Location", "y: = " + location[1]);
-        int screenHeight = Utils.getInstance().getScreenHeightPx(mContext);
-        Log.e("Location", "screenHeight: = " + screenHeight);
-        MusicSelectAnimation.getInstance().createAnimation(view, location[1], screenHeight);
+
+        MusicSelectAnimation.getInstance().createObjectAnimation(view, parent.getHeight(), mParentFrame);
     }
 
     class AnimationAdapter extends BaseAdapter {
@@ -97,11 +97,8 @@ public class AnimationDemo extends Activity implements OnItemClickListener {
             ViewHolder holder = null;
             if (convertView == null) {
                 holder = new ViewHolder();
-                TextView view = new TextView(mContext);
-                view.setMinHeight(40);
-                view.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-                holder.view = view;
-                convertView = view;
+                convertView = View.inflate(mContext, R.layout.layout_music_list_item, null);
+                holder.view = (TextView) convertView.findViewById(R.id.music_item_txv);
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();

@@ -16,9 +16,24 @@ package com.teemo.music.animation;
 
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
+import android.view.animation.DecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
+import android.widget.FrameLayout;
+import android.widget.FrameLayout.LayoutParams;
+import android.widget.ImageView;
+
+import com.nineoldandroids.animation.Animator;
+import com.nineoldandroids.animation.Animator.AnimatorListener;
+import com.nineoldandroids.animation.AnimatorSet;
+import com.nineoldandroids.animation.ObjectAnimator;
+import com.nineoldandroids.animation.ValueAnimator;
+import com.nineoldandroids.animation.ValueAnimator.AnimatorUpdateListener;
+import com.teemo.demo.MyApplication;
+import com.teemo.demo.R;
+import com.teemo.utils.LogMgr;
 
 /**
  * @brief The animation like of KuGou music that select music.
@@ -28,6 +43,11 @@ import android.view.animation.TranslateAnimation;
  * @date 2016-2-17 下午3:36:22
  */
 public class MusicSelectAnimation {
+    private final String TAG = MusicSelectAnimation.class.getSimpleName();
+    private final int TOTAL_TIMES = 2000; //ms
+    private final int MAX_TIMES = 1600;// ms
+    private final int MIN_TIME = 700;// ms
+
     public static MusicSelectAnimation sInstance = null;
 
     public static MusicSelectAnimation getInstance() {
@@ -42,62 +62,60 @@ public class MusicSelectAnimation {
     public MusicSelectAnimation() {
     }
 
-    public void createAnimation(final View itemView, final float yItem, final float screenHeight) {
-        TranslateAnimation translateAnimation = new TranslateAnimation(10, 10, 0, (0 - 10));
-
-        translateAnimation.setDuration(200);
-        translateAnimation.setAnimationListener(new AnimationListener() {
+    public void createObjectAnimation(final View itemView, final int parentHeight, final FrameLayout grandView) {
+        /*ImageView img = getAnimatorView();
+        FrameLayout itemLayout = (FrameLayout) itemView;
+        itemLayout.addView(img);*/
+        int[] location = new int[2];
+        itemView.getLocationOnScreen(location);
+        final ImageView img = getAnimatorView(location);
+        grandView.addView(img);
+        int duration = (TOTAL_TIMES * (parentHeight-location[1]) / parentHeight);
+        if (duration > MAX_TIMES) {
+            duration = MAX_TIMES;
+        } else if (duration < MIN_TIME) {
+            duration = MIN_TIME;
+        }
+        ObjectAnimator animUp = ObjectAnimator.ofFloat(img, "y", location[1] - itemView.getHeight() / 2, location[1] - itemView.getHeight()).setDuration(400);
+        animUp.setInterpolator(new DecelerateInterpolator());
+        
+        ObjectAnimator animDown = ObjectAnimator.ofFloat(img, "y", location[1] - itemView.getHeight(), (float)parentHeight).setDuration(duration);
+        animDown.setInterpolator(new AccelerateInterpolator());
+        animDown.addListener(new AnimatorListener() {
             
             @Override
-            public void onAnimationStart(Animation animation) {
+            public void onAnimationStart(Animator arg0) {
                 
             }
             
             @Override
-            public void onAnimationRepeat(Animation animation) {
+            public void onAnimationRepeat(Animator arg0) {
                 
             }
             
             @Override
-            public void onAnimationEnd(Animation animation) {
-                createDownAnimation(itemView, yItem, screenHeight);
+            public void onAnimationEnd(Animator arg0) {
+                grandView.removeView(img);
+            }
+            
+            @Override
+            public void onAnimationCancel(Animator arg0) {
+                
             }
         });
-        itemView.startAnimation(translateAnimation);
-        Log.d("Location", "time>>>> start");
+
+        AnimatorSet set = new AnimatorSet();
+        set.playSequentially(animUp, animDown);
+        set.start();
     }
 
-    public void createDownAnimation(final View itemView, float yItem, float screenHeight) {
-        float distance = screenHeight - yItem - 50;
-        Log.e("Location", "distance = " + distance);
-        TranslateAnimation translateAnimation = new TranslateAnimation(10, 10, (0 - 10), distance);
-
-        long duration = (long) (distance / 0.5);
-        Log.e("Location", "duration = " + duration);
-        if (duration > 1500) {
-            duration = 1500;
-        } else if (duration < 200) {
-            duration = 200;
-        }
-        Log.e("Location", "duration = " + duration);
-        translateAnimation.setDuration((long) duration);
-        translateAnimation.setAnimationListener(new AnimationListener() {
-            
-            @Override
-            public void onAnimationStart(Animation animation) {
-                
-            }
-            
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-                
-            }
-            
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                Log.d("Location", "time>>>> end\n\n");
-            }
-        });
-        itemView.startAnimation(translateAnimation);
+    private ImageView getAnimatorView(int location[]) {
+        ImageView img = new ImageView(MyApplication.s_Context);
+        img.setImageResource(R.drawable.ic_launcher);
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(30, 30);
+        params.leftMargin = 10;
+        params.topMargin = location[1];
+        img.setLayoutParams(params);
+        return img;
     }
 }

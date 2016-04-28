@@ -6,8 +6,6 @@ package com.teemo.demo;
 import java.lang.Thread.UncaughtExceptionHandler;
 
 import android.app.Application;
-import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 import android.media.AudioManager;
 import android.util.Log;
 
@@ -17,14 +15,14 @@ import android.util.Log;
  */
 public class MyApplication extends Application {
 
-    public static MyApplication myApplication = null;
+    public static MyApplication s_Context = null;
     private AudioManager mAudioManager = null;
     
     @Override
     public void onCreate() {
         super.onCreate();
         Log.d("BootBroadcastReceiver", "====> MyApplication onCreate");
-        myApplication = this;
+        s_Context = this;
         ApplicationContext.ContextSet(this.getPackageName(), this);
         /*BoxManager.getInstance().setBoxPolicy(BoxManager.POLICY_FOR_VOICEAPP);
         BoxManager.getInstance().stopBootLedShowing(); // close framework power
